@@ -1,7 +1,7 @@
 import * as React from 'react';
 import RichEditor from "./components/RichEditor";
 import Editor from "./core/editor";
-import { Menu, Dropdown, Button } from 'antd';
+import { Tooltip, Menu, Dropdown, Button } from 'antd';
 import "antd/dist/antd.css";
 import './css/App.css';
 
@@ -10,18 +10,27 @@ let editor: any;
 
 const FileMenu = (
   <Menu>
-      <Menu.Item>
-        <span className="menu-item">Print page</span>
-      </Menu.Item>
-      <Menu.Item>
-        <span className="menu-item">Print</span>
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item>
-        <span className="menu-item">Print</span>
-      </Menu.Item>
-    </Menu>
+    <Menu.Item>
+      <span className="menu-item">Print page</span>
+    </Menu.Item>
+    <Menu.Item>
+      <span className="menu-item">Print</span>
+    </Menu.Item>
+    <Menu.Divider />
+    <Menu.Item>
+      <span className="menu-item">Print</span>
+    </Menu.Item>
+  </Menu>
 );
+
+const TooltipButton = (props: any) => {
+  let { title, children, icon, onClick } = props;
+  return (
+    <Tooltip placement="bottom" title={title}>
+      <Button icon={icon} onClick={onClick}>{children}</Button>
+    </Tooltip>
+  );
+};
 
 
 
@@ -37,6 +46,12 @@ class App extends React.Component {
   }
   public strikeThroughText = () => {
     editor.execCmd("strikeThrough");
+  }
+  public indentParp = () => {
+    editor.execCmd("indent");
+  }
+  public outdentParp = () => {
+    editor.execCmd("outdent");
   }
   public justifyCenterText = () => {
     editor.execCmd("justifyCenter");
@@ -59,6 +74,10 @@ class App extends React.Component {
   public redoOp = () => {
     editor.execCmd("redo");
   }
+  // TEST
+  public insetPageHead=()=>{
+    editor.execCmd("insertHTML",editor.renderPageHead());
+  };
   public render() {
     return (
       <div className="App">
@@ -71,26 +90,31 @@ class App extends React.Component {
             <span className="menu">Edit</span>
             <span className="menu">View</span>
             <span className="menu">Format</span>
+            <span className="menu" onClick={this.insetPageHead}>InsertPageHead(TEST)</span>
           </div>
           <div className="head-controll">
             <div className="controll-group">
-              <Button icon="undo" onClick={this.undoOp} />
-              <Button icon="redo" onClick={this.redoOp} />
+              <TooltipButton icon="undo" title="undo" onClick={this.undoOp} />
+              <TooltipButton icon="redo" title="redo" onClick={this.redoOp} />
             </div>
             <div className="controll-group">
-              <Button icon="bold" onClick={this.boldText} />
-              <Button icon="italic" onClick={this.italicText} />
-              <Button icon="underline" onClick={this.underlineText} />
-              <Button icon="strikethrough" onClick={this.strikeThroughText} />
+              <TooltipButton icon="bold" title="bold" onClick={this.boldText} />
+              <TooltipButton icon="italic" title="italic" onClick={this.italicText} />
+              <TooltipButton icon="underline" title="underline" onClick={this.underlineText} />
+              <TooltipButton icon="strikethrough" title="strikethrough" onClick={this.strikeThroughText} />
             </div>
             <div className="controll-group">
-              <Button icon="align-center" onClick={this.justifyCenterText} />
-              <Button icon="align-left" onClick={this.justifyLeftText} />
-              <Button icon="align-right" onClick={this.justifyRightText} />
+              <TooltipButton icon="menu-unfold" title="indent" onClick={this.indentParp} />
+              <TooltipButton icon="menu-fold" title="outdent" onClick={this.outdentParp} />
             </div>
             <div className="controll-group">
-              <Button icon="scissor" onClick={this.cutContent} />
-              <Button icon="copy" onClick={this.copyContent} />
+              <TooltipButton icon="align-center" title="align-center" onClick={this.justifyCenterText} />
+              <TooltipButton icon="align-left" title="align-left" onClick={this.justifyLeftText} />
+              <TooltipButton icon="align-right" title="align-right" onClick={this.justifyRightText} />
+            </div>
+            <div className="controll-group">
+              <TooltipButton icon="scissor" title="cut" onClick={this.cutContent} />
+              <TooltipButton icon="copy" title="copy" onClick={this.copyContent} />
             </div>
           </div>
         </div>
