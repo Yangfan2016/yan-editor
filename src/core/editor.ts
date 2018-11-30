@@ -1,4 +1,5 @@
 class Editor {
+    private static cacheRange: any
     public container: any
     public textLen: number
     constructor(el: string) {
@@ -22,7 +23,7 @@ class Editor {
     }
     public init() {
         // init text
-        this.container.innerHTML=this.renderLine();
+        this.container.innerHTML = this.renderLine();
         //  auto focus
         this.container.focus();
         // event
@@ -31,13 +32,24 @@ class Editor {
             // delete
             if (ev.keyCode === 8) {
                 if (len === 0) {
-                    this.execCmd("insertHTML",this.renderLine());
+                    this.execCmd("insertHTML", this.renderLine());
                 }
-            }   
+            }
             this.textLen = len;
+        });
+        this.container.addEventListener("blur", () => {
+            // save range
+            let s = window.getSelection();
+            Editor.cacheRange = s.getRangeAt(0);
         });
     }
     public execCmd(type: string, value?: any) {
+        // restore range
+        let s = window.getSelection();
+        s.removeAllRanges();
+        s.addRange(Editor.cacheRange);
+        // focus
+        this.container.focus();
         return document.execCommand(type, false, value);
     }
 }

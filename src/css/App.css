@@ -21,6 +21,14 @@ blockquote{
 .ant-btn{
   border:none;
 }
+.ant-select-focused .ant-select-selection,
+.ant-select-selection:focus, 
+.ant-select-selection:active,
+.ant-select-open .ant-select-selection,
+.ant-select-selection{
+  border:none;
+  box-shadow: none;
+}
 /* app */
 html,body{
   width: 100%;
@@ -56,4 +64,8 @@ html,body{
   display: inline-block;
   padding: 5px 10px;
   border-right:1px solid #ccc;
+}
+.yan-btn--label{
+  padding:0 8px;
+  cursor: pointer;
 }

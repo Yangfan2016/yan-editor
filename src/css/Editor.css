@@ -6,8 +6,7 @@ blockquote{
 .editor-box{
     padding:96px;
     width:794px;
-    height: 1132px;
-    overflow: hidden;
+    min-height: 1132px;
     margin:10px auto;
     background-color: #fff;
     box-shadow: 1px 0px 3px 1px #757575;
