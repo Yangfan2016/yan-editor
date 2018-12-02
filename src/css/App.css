@@ -36,11 +36,17 @@ html,body{
 }
 .App{
   height: 100%;
+  padding: 120px 0 0 0;
   background-color: #ccc;
 }
 .app-head{
-  margin:0 0 15px 0;
+  position:fixed;
+  top:0;
+  left:0;
+  right: 0;
   background-color: #fff;
+  box-shadow: 2px 3px 2px 0px #aeaeae;
+  z-index:9;
 }
 .head-menu{
   padding: 10px 5px;

@@ -1,6 +1,8 @@
 ## yan-editor
 
-This is a tiny editor
+This is a tiny multiplayer collaborative editor
+
+![doc-editor](https://raw.githubusercontent.com/Yangfan2016/PicBed/master/Blog/yan-editor.JPG)
 
 ### Contributing
 - Fork this Repo first

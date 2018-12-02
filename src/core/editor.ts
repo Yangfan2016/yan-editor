@@ -16,7 +16,7 @@ class Editor {
 
     }
     public renderLine() {
-        return '<div class="editor--line"></div>';
+        return '<div class="editor--line"></div><div class="editor--line"></div>';
     }
     public renderPageHead() {
         return '<div class="editor--page-head"></div>';
