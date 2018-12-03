@@ -8,10 +8,10 @@ let pool = [];
 
 wss.on('connection', function (ws,req) {
     const ip = req.connection.remoteAddress;
-    console.log(ip);
+    global.console.log(ip);
     pool.push(ws);
     ws.on('message', function (message) {
-        console.log('received: %s', message);
+        global.console.log('received: %s', message);
         pool.forEach(client => {
             if (client !== ws) {
                 client.send(message);
