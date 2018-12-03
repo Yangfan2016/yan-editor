@@ -38,6 +38,10 @@ class App extends React.Component {
       fontSize: 3, // normal
     };
   }
+  // 格式刷
+  public execForametMatch() {
+    editor.execCmd("formatmatch");
+  }
   // 普通操作
   public execNormalCmd(type: string, val?: string) {
     editor.execCmd(type, val);
@@ -162,6 +166,7 @@ class App extends React.Component {
             <div className="controll-group">
               <TooltipButton icon="scissor" title="cut" onClick={this.execNormalCmd.bind(this, 'cut')} />
               <TooltipButton icon="copy" title="copy" onClick={this.execNormalCmd.bind(this, 'copy')} />
+              <TooltipButton icon="highlight" title="formatmatch" onClick={this.execForametMatch} />
             </div>
           </div>
         </div>

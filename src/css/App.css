@@ -17,6 +17,13 @@ blockquote{
     padding: 0;
     margin: 0;
 }
+
+/* global config */
+:root{
+  --theme-color:#333;
+  --theme-bgcolor:#ccc;
+}
+
 /* antd overwrite */
 .ant-btn{
   border:none;
@@ -37,7 +44,7 @@ html,body{
 .App{
   height: 100%;
   padding: 120px 0 0 0;
-  background-color: #ccc;
+  background-color: var(--theme-bgcolor);
 }
 .app-head{
   position:fixed;
@@ -58,18 +65,18 @@ html,body{
   cursor: pointer;
 }
 .menu:hover{
-  background-color: #ccc;
+  background-color: var(--theme-bgcolor);
   color:#fff;
 }
 .head-controll{
   margin:10px 0 0 0;
   padding:0 15px;
-  border-top:1px solid #ccc;
+  border-top:1px solid var(--theme-bgcolor);
 }
 .controll-group{
   display: inline-block;
   padding: 5px 10px;
-  border-right:1px solid #ccc;
+  border-right:1px solid var(--theme-bgcolor);
 }
 .yan-btn--label{
   padding:0 8px;
