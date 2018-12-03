@@ -5,7 +5,7 @@ import { Select, Icon, Tooltip, Menu, Dropdown } from 'antd';
 import "antd/dist/antd.css";
 import './css/App.css';
 import { FONT_NAME_LIST, FONT_SIZE_LIST } from "./config/index"
-import { TooltipLabel, TooltipButton } from "./components/Wrapper";
+import { TooltipButtonFormatBrush, TooltipButtonRemoveFormat, TooltipLabel, TooltipButton } from "./components/Wrapper";
 
 let editor: any;
 let { Option } = Select;
@@ -166,7 +166,10 @@ class App extends React.Component {
             <div className="controll-group">
               <TooltipButton icon="scissor" title="cut" onClick={this.execNormalCmd.bind(this, 'cut')} />
               <TooltipButton icon="copy" title="copy" onClick={this.execNormalCmd.bind(this, 'copy')} />
-              <TooltipButton icon="highlight" title="formatmatch" onClick={this.execForametMatch} />
+            </div>
+            <div className="controll-group">
+              <TooltipButtonFormatBrush title="formatbrush" onClick={this.execForametMatch} />
+              <TooltipButtonRemoveFormat title="removeformat" onClick={this.execNormalCmd.bind(this, 'removeformat')}  />
             </div>
           </div>
         </div>

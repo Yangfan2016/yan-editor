@@ -1,25 +1,3 @@
-const SPECAIL_CMD_MODE: any = {
-    bold() {
-        return {
-            "font-weight": "bolder",
-        };
-    },
-    italic() {
-        return {
-            "font-style": "italic",
-        };
-    },
-    underline() {
-        return {
-            "text-decoration": "underline",
-        };
-    },
-    strikethrough() {
-        return {
-            "text-decoration": "line-through",
-        };
-    },
-};
 const FOAMAT_STYLE_LIST = [
     "font-size",
     "font-family",
@@ -83,12 +61,6 @@ class Editor {
         // focus
         this.container.focus();
         let cmd = type.toLowerCase();
-        // change some cmd [BUG]
-        // let specialCmdList: any = Object.keys(SPECAIL_CMD_MODE);
-        // if (specialCmdList.includes(cmd)) {
-        //     return this.wrapperText(s, cmd);
-        // }
-
         // [CMD] format match
         switch (cmd) {
             case "formatmatch":
@@ -104,19 +76,27 @@ class Editor {
         let styleDist: any = window.getComputedStyle(parent);
         styleDist = this.shiftSomeStyle(styleDist);
 
+        let isNeedSetDualTextDecoration = this.isHadDualDeclareTextStyleFormRange(range);
+        if (isNeedSetDualTextDecoration) {
+            styleDist["text-decoration-line"] = "underline line-through";
+        }
+
         let addList = () => {
             let s = window.getSelection();
             let selectText = s.toString();
             let htmlTpl = '';
             let styleTpl = '';
 
-            for (let rule in styleDist) {
-                if (styleDist.hasOwnProperty(rule)) {
-                    styleTpl += `${rule}:${styleDist[rule]};`;
+            if (styleDist !== null) {
+                for (let rule in styleDist) {
+                    if (styleDist.hasOwnProperty(rule)) {
+                        styleTpl += `${rule}:${styleDist[rule]};`;
+                    }
                 }
+                htmlTpl = `<span style='${styleTpl}'>${selectText}</span>`;
+            } else {
+                htmlTpl = selectText;
             }
-
-            htmlTpl = `<span style='${styleTpl}'>${selectText}</span>`;
 
             document.execCommand("insertHTML", false, htmlTpl);
             // remove mouseup
@@ -131,30 +111,33 @@ class Editor {
             return res;
         }, {});
     }
-    public wrapperText(selection: any, cmd: string) {
-        let range = selection.getRangeAt(0);
-        let rangeDom = range.commonAncestorContainer;
-        let mode = SPECAIL_CMD_MODE[cmd]();
+    public findAncestorElementByRange(range: Range) {
+        let parent: any = range.startContainer.parentElement;
 
-        if (rangeDom && rangeDom.nodeType === 3) { // #text
-            let wrapperBox = document.createElement("span");
-            for (let rule in mode) {
-                if (mode.hasOwnProperty(rule)) {
-                    wrapperBox.style[rule] = mode[rule];
-                }
-            }
-            range.surroundContents(wrapperBox);
+        if (parent.nodeType === 3) { // #text
+            return parent;
         } else {
-            for (let rule in mode) {
-                if (mode.hasOwnProperty(rule)) {
-                    let isHadStyle = window.getComputedStyle(rangeDom)[rule] === mode[rule];
-                    if (isHadStyle) {
-                        rangeDom.style[rule] = mode[rule];
-                    } else {
-                        rangeDom.style[rule] = "noraml";
-                    }
-                }
+            let ancestorNode = null;
+            while (!parent.classList.contains("editor--line")) {
+                ancestorNode = parent;
+                parent = parent.parentElement;
             }
+            return ancestorNode;
+        }
+    }
+    // for <strike /> and <u/>
+    public isHadDualDeclareTextStyleFormRange(range: Range) {
+        let parent: any = range.startContainer.parentElement;
+
+        if (parent.nodeType === 3) { // #text
+            return false;
+        } else {
+            let list: any = [];
+            while (!parent.classList.contains("editor--line")) {
+                list.push(parent.nodeName);
+                parent = parent.parentElement;
+            }
+            return list.includes("U") && list.includes("STRIKE");
         }
     }
 }
