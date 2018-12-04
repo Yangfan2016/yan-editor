@@ -66,6 +66,8 @@ class Editor {
             case "formatmatch":
                 let r = s.getRangeAt(0);
                 return this.formatMatch(r);
+            case "print":
+                return this.print();
             default:
                 break;
         }
@@ -129,16 +131,31 @@ class Editor {
     public isHadDualDeclareTextStyleFormRange(range: Range) {
         let parent: any = range.startContainer.parentElement;
 
+        if (parent === null) {
+            return false;
+        }
         if (parent.nodeType === 3) { // #text
             return false;
-        } else {
-            let list: any = [];
-            while (!parent.classList.contains("editor--line")) {
-                list.push(parent.nodeName);
-                parent = parent.parentElement;
-            }
-            return list.includes("U") && list.includes("STRIKE");
         }
+
+        let list: any = [];
+        while (!parent.classList.contains("editor--line")) {
+            list.push(parent.nodeName);
+            parent = parent.parentElement;
+        }
+        return list.includes("U") && list.includes("STRIKE");
+    }
+    // print 
+    public print() {
+        let iframe: any = document.getElementById("YF_IFR_FOR_EDITOR");
+        if (iframe == null) {
+            iframe = document.createElement("iframe");
+            iframe.id = "YF_IFR_FOR_EDITOR";
+            iframe.style.display = "none";
+            document.body.appendChild(iframe);
+        }
+        iframe.contentDocument.body.innerHTML = this.container.innerHTML;
+        iframe.contentWindow.print();
     }
 }
 

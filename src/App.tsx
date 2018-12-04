@@ -4,30 +4,15 @@ import Editor from "./core/editor";
 import { Select, Icon, Tooltip, Menu, Dropdown } from 'antd';
 import "antd/dist/antd.css";
 import './css/App.css';
-import { FONT_NAME_LIST, FONT_SIZE_LIST } from "./config/index"
+import { FONT_LEVEL_LIST, FONT_NAME_LIST, FONT_SIZE_LIST } from "./config/index"
 import { TooltipButtonFormatBrush, TooltipButtonRemoveFormat, TooltipLabel, TooltipButton } from "./components/Wrapper";
 
 let editor: any;
 let { Option } = Select;
 
-// TEMP
-const FileMenu = (
-  <Menu>
-    <Menu.Item>
-      <span className="menu-item">Print page</span>
-    </Menu.Item>
-    <Menu.Item>
-      <span className="menu-item">Print</span>
-    </Menu.Item>
-    <Menu.Divider />
-    <Menu.Item>
-      <span className="menu-item">Print</span>
-    </Menu.Item>
-  </Menu>
-);
-
 class App extends React.Component {
   public state: any
+  public FileMenu: any
   constructor(props: any) {
     super(props);
 
@@ -36,7 +21,23 @@ class App extends React.Component {
       backColor: "#333",
       fontName: "Microsoft Yahei",
       fontSize: 3, // normal
+      fontLevel: "p",
     };
+
+    this.FileMenu = (
+      <Menu>
+        <Menu.Item>
+          <span className="menu-item">Save</span>
+        </Menu.Item>
+        <Menu.Item>
+          <span className="menu-item">Share</span>
+        </Menu.Item>
+        <Menu.Divider />
+        <Menu.Item>
+          <span className="menu-item" onClick={this.execNormalCmd.bind(this, "print")}>Print</span>
+        </Menu.Item>
+      </Menu>
+    );
   }
   // 格式刷
   public execForametMatch() {
@@ -47,6 +48,13 @@ class App extends React.Component {
     editor.execCmd(type, val);
   }
   // 下拉选择操作
+  public selectFontLevel = (val: string) => {
+    this.setState({
+      fontLevel: val,
+    }, () => {
+      editor.execCmd("formatBlock", val);
+    });
+  }
   public selectFontSize = (val: string) => {
     this.setState({
       fontSize: val,
@@ -81,12 +89,10 @@ class App extends React.Component {
   public render() {
     return (
       <div className="App">
-        {/* helpers */}
-
         <div className="app-head">
           {/* controll-panel */}
           <div className="head-menu">
-            <Dropdown overlay={FileMenu}>
+            <Dropdown overlay={this.FileMenu}>
               <span className="menu">File</span>
             </Dropdown>
             <span className="menu">Edit</span>
@@ -97,6 +103,25 @@ class App extends React.Component {
             <div className="controll-group">
               <TooltipButton icon="undo" title="undo" onClick={this.execNormalCmd.bind(this, 'undo')} />
               <TooltipButton icon="redo" title="redo" onClick={this.execNormalCmd.bind(this, 'redo')} />
+            </div>
+            <div className="controll-group">
+              <Tooltip placement="top" title="fontLevel">
+                <Select defaultValue={this.state.fontLevel} style={{
+                  width: 110,
+                }}
+                  onChange={this.selectFontLevel}>
+                  {
+                    FONT_LEVEL_LIST.map((font, n) => {
+                      return (
+                        <Option value={font.value} key={"" + n}>
+                          {/* <span className={"editor-text--"+font.value}>{font.title}</span> */}
+                          {font.title}
+                        </Option>
+                      );
+                    })
+                  }
+                </Select>
+              </Tooltip>
             </div>
             <div className="controll-group">
               <Tooltip placement="top" title="fontName">
@@ -169,7 +194,7 @@ class App extends React.Component {
             </div>
             <div className="controll-group">
               <TooltipButtonFormatBrush title="formatbrush" onClick={this.execForametMatch} />
-              <TooltipButtonRemoveFormat title="removeformat" onClick={this.execNormalCmd.bind(this, 'removeformat')}  />
+              <TooltipButtonRemoveFormat title="removeformat" onClick={this.execNormalCmd.bind(this, 'removeformat')} />
             </div>
           </div>
         </div>

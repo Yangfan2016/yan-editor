@@ -15,3 +15,13 @@ export const FONT_SIZE_LIST = [
     { title: "xx-large", value: 6 },
     { title: "xxx-large", value: 7 }
 ];
+
+export const FONT_LEVEL_LIST = [
+    { title: "段落", value: "p" },
+    { title: "标题1", value: "h1" },
+    { title: "标题2", value: "h2" },
+    { title: "标题3", value: "h3" },
+    { title: "标题4", value: "h4" },
+    { title: "标题5", value: "h5" },
+    { title: "标题6", value: "h6" }
+];
