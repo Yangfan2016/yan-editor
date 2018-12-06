@@ -1,12 +1,3 @@
-const FOAMAT_STYLE_LIST = [
-    "font-size",
-    "font-family",
-    "font-weight",
-    "font-style",
-    "text-decoration",
-    "background-color",
-    "color",
-];
 
 class Editor {
     private static cacheRange: any
@@ -36,6 +27,8 @@ class Editor {
         this.container.innerHTML = this.renderLine();
         //  auto focus
         this.container.focus();
+        // use style css not html tag
+        document.execCommand("styleWithCSS", true);
         // event
         this.container.addEventListener("keyup", (ev: any) => {
             let len = this.container.innerText.length;
@@ -75,42 +68,80 @@ class Editor {
     }
     public formatMatch(range: Range) {
         let parent: any = range.startContainer.parentElement;
-        let styleDist: any = window.getComputedStyle(parent);
-        styleDist = this.shiftSomeStyle(styleDist);
-
-        let isNeedSetDualTextDecoration = this.isHadDualDeclareTextStyleFormRange(range);
-        if (isNeedSetDualTextDecoration) {
-            styleDist["text-decoration-line"] = "underline line-through";
-        }
+        let cssText: any = parent.style.cssText;
 
         let addList = () => {
             let s = window.getSelection();
+            let r = s.getRangeAt(0);
+            let p: any = r.startContainer.parentElement;
             let selectText = s.toString();
-            let htmlTpl = '';
-            let styleTpl = '';
 
-            if (styleDist !== null) {
-                for (let rule in styleDist) {
-                    if (styleDist.hasOwnProperty(rule)) {
-                        styleTpl += `${rule}:${styleDist[rule]};`;
-                    }
-                }
-                htmlTpl = `<span style='${styleTpl}'>${selectText}</span>`;
+            // H标签特殊处理
+            if (/^H[1-6]$/.test(p.nodeName)) {
+                this.formatMatchHeading(cssText);
             } else {
-                htmlTpl = selectText;
+                let htmlTpl = '';
+                if (cssText !== null) {
+                    htmlTpl = `<span style='${cssText}'>${selectText}</span>`;
+                } else {
+                    htmlTpl = selectText;
+                }
+                document.execCommand("insertHTML", false, htmlTpl);
             }
-
-            document.execCommand("insertHTML", false, htmlTpl);
             // remove mouseup
             document.removeEventListener("mouseup", addList);
         };
         // add moseup
         document.addEventListener("mouseup", addList);
     }
-    public shiftSomeStyle(style: any): any {
-        return FOAMAT_STYLE_LIST.reduce((res, rule) => {
-            res[rule] = style[rule];
-            return res;
+    public formatMatchHeading(cssText: string) {
+        let style: any = this.cssText2StyleDist(cssText);
+        let textDecoration = style["text-decoration-line"];
+        let isBold = style["font-weight"] === "bold";
+        let isItalic = style["font-style"] === "italic";
+        let isUnderline = textDecoration.indexOf("underline") !== -1;
+        let isStrkeThrough = textDecoration.indexOf("line-through") !== -1;
+        let fontName = style["font-family"];
+        let foreColor = style.color;
+        let backColor = style["background-color"];
+        let isSet = false;
+
+        switch (true) {
+            case isBold:
+                isSet = document.queryCommandState("bold");
+                if (!isSet) {
+                    document.execCommand("bold", false);
+                }
+            case isItalic:
+                isSet = document.queryCommandState("italic");
+                if (!isSet) {
+                    document.execCommand("italic", false);
+                }
+            case isStrkeThrough:
+                isSet = document.queryCommandState("strikethrough");
+                if (!isSet) {
+                    document.execCommand("strikethrough", false);
+                }
+            case isUnderline:
+                isSet = document.queryCommandState("underline");
+                if (!isSet) {
+                    document.execCommand("underline", false);
+                }
+            case fontName !== "":
+                document.execCommand("fontname", false, fontName);
+            case foreColor !== "":
+                document.execCommand("forecolor", false, foreColor);
+            case backColor !== "":
+                document.execCommand("backcolor", false, backColor);
+            default:
+                break;
+        }
+    }
+    public cssText2StyleDist(cssText: string) {
+        return cssText.split(";").filter(item => (item !== "")).reduce((obj, item) => {
+            let d = item.trim().split(":");
+            obj[d[0]] = d[1].trim();
+            return obj;
         }, {});
     }
     public findAncestorElementByRange(range: Range) {
