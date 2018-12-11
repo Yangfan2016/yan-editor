@@ -39,6 +39,22 @@ class App extends React.Component {
       </Menu>
     );
   }
+  // 初始化设置
+  public resetConfig() {
+    this.setState({
+      foreColor: "#333",
+      backColor: "#333",
+      fontName: "Microsoft Yahei",
+      fontSize: 3, // normal
+      fontLevel: "p",
+    });
+  }
+  // 去除格式
+  public execRemoveFormat = () => {
+    editor.execCmd("removeformat");
+    // 恢复初始设置
+    this.resetConfig();
+  }
   // 格式刷
   public execForametMatch() {
     editor.execCmd("formatmatch");
@@ -194,7 +210,7 @@ class App extends React.Component {
             </div>
             <div className="controll-group">
               <TooltipButtonFormatBrush title="formatbrush" onClick={this.execForametMatch} />
-              <TooltipButtonRemoveFormat title="removeformat" onClick={this.execNormalCmd.bind(this, 'removeformat')} />
+              <TooltipButtonRemoveFormat title="removeformat" onClick={this.execRemoveFormat} />
             </div>
           </div>
         </div>

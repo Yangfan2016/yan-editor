@@ -96,7 +96,7 @@ class Editor {
     }
     public formatMatchHeading(cssText: string) {
         let style: any = this.cssText2StyleDist(cssText);
-        let textDecoration = style["text-decoration-line"];
+        let textDecoration = style["text-decoration-line"] || "";
         let isBold = style["font-weight"] === "bold";
         let isItalic = style["font-style"] === "italic";
         let isUnderline = textDecoration.indexOf("underline") !== -1;
