@@ -1,4 +1,4 @@
-## yan-editor
+## yan-doc
 
 This is a tiny multiplayer collaborative editor
 
