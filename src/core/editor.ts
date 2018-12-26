@@ -94,7 +94,7 @@ class Editor {
         // add moseup
         document.addEventListener("mouseup", addList);
     }
-    public formatMatchHeading(cssText: string) {
+    public formatMatchHeading(cssText: string) { // [BUG]
         let style: any = this.cssText2StyleDist(cssText);
         let textDecoration = style["text-decoration-line"] || "";
         let isBold = style["font-weight"] === "bold";

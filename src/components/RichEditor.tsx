@@ -69,7 +69,9 @@ class RichEditor extends React.Component {
         ws.addEventListener("close", () => {
             window.console.log("unlink");
         });
-
+        editorEle.addEventListener("mouseup",()=>{
+            window.console.log("change");
+        });
         editorEle.addEventListener("keydown", debounce(() => {
             let newStr = editorEle.innerHTML;
             if (newStr !== this.state.htmlString) {

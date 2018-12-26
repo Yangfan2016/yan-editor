@@ -100,4 +100,5 @@ blockquote{
     background-color: #f00;
     color: #fff;
     box-shadow: 2px 2px 2px 0px #b0b0b0;
+    transition:all ease 0.5s;
 }
