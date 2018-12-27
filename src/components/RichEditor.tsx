@@ -1,8 +1,13 @@
 import * as React from 'react';
 import "../css/Editor.css";
 import { throttle } from "../tools/debounceAndThrottle";
+import { decode2Base64 } from "../tools/index";
 
-class RichEditor extends React.Component {
+interface IPropsType {
+    docTitle?: string,
+}
+
+class RichEditor extends React.Component<IPropsType> {
     public state: any
     public refEditorDom: any
     constructor(props: any) {
@@ -23,6 +28,7 @@ class RichEditor extends React.Component {
                 <div id='editorbox'
                     className="editor-box"
                     onClick={this.autoFocusEditor}>
+                    <div className="editor-box-title">{this.props.docTitle}</div>
                     <div id="editor"
                         ref={this.refEditorDom}
                         className="editor-box-page"
@@ -32,6 +38,8 @@ class RichEditor extends React.Component {
         );
     }
     public componentDidMount() {
+        let localCache = JSON.parse(sessionStorage.getItem("YE_BASE_INFO") || "");
+        let { userId, docId } = localCache;
         let ID = window.location.hash; // 用户 TEMP
         if (!ID) { // 没有用户id退出协作
             return;
@@ -42,15 +50,15 @@ class RichEditor extends React.Component {
         let ws: any = new WebSocket('ws://localhost:9696/chat');
 
         ws.addEventListener("message", ({ data }: any) => {
-            let { html, pos, id } = JSON.parse(data);
+            let { html, pos, uId } = JSON.parse(data);
             editorEle.innerHTML = html;
             // 生成鼠标标识
-            let cursorFlag = document.getElementById(id);
+            let cursorFlag = document.getElementById(uId);
             if (cursorFlag === null) {
                 cursorFlag = document.createElement("div");
-                cursorFlag.id = id;
+                cursorFlag.id = uId;
                 cursorFlag.className = "cursor--flag";
-                cursorFlag.innerHTML = id;
+                cursorFlag.innerHTML = decode2Base64(uId);
                 editorBox.appendChild(cursorFlag);
             }
             cursorFlag.style.cssText = `
@@ -90,7 +98,8 @@ class RichEditor extends React.Component {
                         top,
                         left,
                     },
-                    id: ID,
+                    uId: userId,
+                    dId: docId,
                 }));
             }
         };

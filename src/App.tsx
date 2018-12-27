@@ -1,19 +1,23 @@
 import * as React from 'react';
 import RichEditor from "./components/RichEditor";
 import Editor from "./core/editor";
-import { Modal, Select, Icon, Tooltip, Menu, Dropdown } from 'antd';
+import {
+  Input,
+  Modal,
+  Select,
+  Icon,
+  Tooltip,
+  Menu,
+  Dropdown
+} from 'antd';
 import "antd/dist/antd.css";
 import './css/App.css';
 import { FONT_LEVEL_LIST, FONT_NAME_LIST, FONT_SIZE_LIST } from "./config/index"
 import { TooltipButtonFormatBrush, TooltipButtonRemoveFormat, TooltipLabel, TooltipButton } from "./components/Wrapper";
+import { encode2Base64 } from "./tools/index"
 
 let editor: any;
 let { Option } = Select;
-
-Modal.confirm({
-  title:"提示",
-  content:"你好"
-});
 
 class App extends React.Component {
   public state: any
@@ -22,11 +26,19 @@ class App extends React.Component {
     super(props);
 
     this.state = {
+      // editor
       foreColor: "#333",
       backColor: "#333",
       fontName: "Microsoft Yahei",
       fontSize: 3, // normal
       fontLevel: "p",
+      // user
+      userName: "",
+      userId: "",
+      // article
+      docId: "",
+      docTitle: "",
+      docText: "",
     };
 
     this.FileMenu = (
@@ -35,7 +47,7 @@ class App extends React.Component {
           <span className="menu-item">Save</span>
         </Menu.Item>
         <Menu.Item>
-          <span className="menu-item">Share</span>
+          <span className="menu-item" onClick={this.collabrateWork}>Share</span>
         </Menu.Item>
         <Menu.Divider />
         <Menu.Item>
@@ -45,8 +57,43 @@ class App extends React.Component {
     );
   }
   // 协作
-  public collabrateWork() {
-    return 1; // TODO
+  public collabrateWork = () => {
+    let vm = this;
+    let userName = "";
+    let docTitle = "";
+    let inputChangeUserNameHandler = (ev: any) => {
+      userName = ev.target.value;
+    };
+    let inputChangeDocTitleHandler = (ev: any) => {
+      docTitle = ev.target.value;
+    };
+
+    Modal.confirm({
+      title: "Tips",
+      content: (
+        <>
+          <Input className="yan-input--tip" placeholder="Please input your name" onBlur={inputChangeUserNameHandler} />
+          <Input className="yan-input--tip" placeholder="Please input article name" onBlur={inputChangeDocTitleHandler} />
+        </>
+      ),
+      onOk() {
+        let userId = encode2Base64(userName);
+        let docId = encode2Base64(docTitle);
+        sessionStorage.setItem("YE_BASE_INFO", JSON.stringify({
+          userId,
+          docId,
+        }));
+        vm.setState({
+          userName,
+          docTitle,
+          userId,
+          docId,
+        }, () => {
+          // share mode
+          window.location.hash = docId;
+        });
+      }
+    });
   }
   // 初始化设置
   public resetConfig() {
@@ -224,7 +271,7 @@ class App extends React.Component {
           </div>
         </div>
         {/* editor-page */}
-        <RichEditor />
+        <RichEditor docTitle={this.state.docTitle} />
       </div>
     );
   }

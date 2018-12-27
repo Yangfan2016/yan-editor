@@ -82,3 +82,6 @@ html,body{
   padding:0 8px;
   cursor: pointer;
 }
+.yan-input--tip{
+  margin: 5px 0;
+}

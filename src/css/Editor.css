@@ -1,3 +1,12 @@
+:root{
+    --H1:32px;
+    --H2:24px;
+    --H3:18.72px;
+    --H4:16px;
+    --H5:13.28px;
+    --H6:12px;
+}
+
 blockquote{
     padding: 0 0 10px 20px;
     margin: 0 0 5px 0;
@@ -16,6 +25,10 @@ blockquote{
     background: #d1eaff;
     color: inherit;
 }
+.editor-box-title{
+    font-size:var(--H1);
+    text-align: center;
+}
 .editor-box-page{
     font-family: "Microsoft YaHei";
     font-size:16px;
@@ -33,25 +46,25 @@ blockquote{
     box-shadow: 0px 0px 0 1px #19aaff;
 }
 .editor-text--p{
-    font-size:16px;
+    font-size:var(--H4);
 }
 .editor-text--h1{
-    font-size:32px;
+    font-size:var(--H1);
 }
 .editor-text--h2{
-    font-size:24px;
+    font-size:var(--H2);
 }
 .editor-text--h3{
-    font-size:18.72px;
+    font-size:var(--H3);
 }
 .editor-text--h4{
-    font-size:16px;
+    font-size:var(--H4);
 }
 .editor-text--h5{
-    font-size:13.28px;
+    font-size:var(--H5);
 }
 .editor-text--h6{
-    font-size:12px;
+    font-size:var(--H6);
 }
 .editor--line{
     width: 100%;
