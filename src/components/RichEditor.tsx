@@ -1,6 +1,6 @@
 import * as React from 'react';
 import "../css/Editor.css";
-import { debounce } from "../tools/debounceAndThrottle";
+import { throttle } from "../tools/debounceAndThrottle";
 
 class RichEditor extends React.Component {
     public state: any
@@ -16,7 +16,7 @@ class RichEditor extends React.Component {
     public autoFocusEditor = () => {
         let editorDom = this.refEditorDom.current;
         editorDom.focus();
-    };
+    }
     public render() {
         return (
             <>
@@ -69,10 +69,8 @@ class RichEditor extends React.Component {
         ws.addEventListener("close", () => {
             window.console.log("unlink");
         });
-        editorEle.addEventListener("mouseup",()=>{
-            window.console.log("change");
-        });
-        editorEle.addEventListener("keydown", debounce(() => {
+
+        let refreshMessage = () => {
             let newStr = editorEle.innerHTML;
             if (newStr !== this.state.htmlString) {
                 this.setState({
@@ -95,7 +93,10 @@ class RichEditor extends React.Component {
                     id: ID,
                 }));
             }
-        }, 1000));
+        };
+
+        editorEle.addEventListener("mouseup", refreshMessage);
+        editorEle.addEventListener("keydown", throttle(refreshMessage, 300));
     }
 }
 

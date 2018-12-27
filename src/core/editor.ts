@@ -78,7 +78,8 @@ class Editor {
 
             // H标签特殊处理
             if (/^H[1-6]$/.test(p.nodeName)) {
-                this.formatMatchHeading(cssText);
+                p.style.cssText=cssText;
+                // this.formatMatchHeading(cssText);
             } else {
                 let htmlTpl = '';
                 if (cssText !== null) {

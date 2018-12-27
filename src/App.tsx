@@ -1,7 +1,7 @@
 import * as React from 'react';
 import RichEditor from "./components/RichEditor";
 import Editor from "./core/editor";
-import { Select, Icon, Tooltip, Menu, Dropdown } from 'antd';
+import { Modal, Select, Icon, Tooltip, Menu, Dropdown } from 'antd';
 import "antd/dist/antd.css";
 import './css/App.css';
 import { FONT_LEVEL_LIST, FONT_NAME_LIST, FONT_SIZE_LIST } from "./config/index"
@@ -9,6 +9,11 @@ import { TooltipButtonFormatBrush, TooltipButtonRemoveFormat, TooltipLabel, Tool
 
 let editor: any;
 let { Option } = Select;
+
+Modal.confirm({
+  title:"提示",
+  content:"你好"
+});
 
 class App extends React.Component {
   public state: any
@@ -38,6 +43,10 @@ class App extends React.Component {
         </Menu.Item>
       </Menu>
     );
+  }
+  // 协作
+  public collabrateWork() {
+    return 1; // TODO
   }
   // 初始化设置
   public resetConfig() {
